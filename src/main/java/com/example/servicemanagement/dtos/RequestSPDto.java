@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestSProviderDto {
+public class RequestSPDto {
     private String name;
     private String address;
     private String phoneNo;

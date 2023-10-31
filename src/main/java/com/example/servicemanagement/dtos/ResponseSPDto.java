@@ -6,20 +6,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseSProviderDto {
-    private String id;
+public class ResponseSPDto {
+    private String spId;
     private String name;
     private String address;
     private String phoneNo;
     private String category;
 
-    public static ResponseSProviderDto empty() {
-        return new ResponseSProviderDto();
+    public static ResponseSPDto empty() {
+        return new ResponseSPDto();
     }
 
-    public static ResponseSProviderDto from(ServiceProvider savedSavedProvider) {
-        ResponseSProviderDto sProviderDto = new ResponseSProviderDto();
-        sProviderDto.setId(savedSavedProvider.getId());
+    public static ResponseSPDto from(ServiceProvider savedSavedProvider) {
+        ResponseSPDto sProviderDto = new ResponseSPDto();
+        sProviderDto.setSpId(savedSavedProvider.getId());
         sProviderDto.setName(savedSavedProvider.getName());
         sProviderDto.setAddress(savedSavedProvider.getAddress());
         sProviderDto.setPhoneNo(savedSavedProvider.getPhoneNo());

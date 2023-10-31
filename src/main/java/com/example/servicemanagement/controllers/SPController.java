@@ -1,7 +1,7 @@
 package com.example.servicemanagement.controllers;
 
-import com.example.servicemanagement.dtos.RequestSProviderDto;
-import com.example.servicemanagement.dtos.ResponseSProviderDto;
+import com.example.servicemanagement.dtos.RequestSPDto;
+import com.example.servicemanagement.dtos.ResponseSPDto;
 import com.example.servicemanagement.services.SProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,49 +18,49 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sp")
-public class SProviderController {
+@RequestMapping("/service-provider")
+public class SPController {
     private final SProviderService sProviderService;
 
     @Autowired
-    public SProviderController(SProviderService sProviderService) {
+    public SPController(SProviderService sProviderService) {
         this.sProviderService = sProviderService;
     }
 
     @PostMapping
-    public ResponseEntity<ResponseSProviderDto> addServiceProvider(
-            @RequestBody RequestSProviderDto createRequestDto
+    public ResponseEntity<ResponseSPDto> addServiceProvider(
+            @RequestBody RequestSPDto createRequestDto
     ) {
-        ResponseSProviderDto sProviderDto = sProviderService.createServiceProvider(createRequestDto);
+        ResponseSPDto sProviderDto = sProviderService.createServiceProvider(createRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(sProviderDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseSProviderDto> retrieveServiceProvider(@PathVariable("id") String id) throws Exception {
-        ResponseSProviderDto sProviderDto = sProviderService.getServiceProvider(id);
+    public ResponseEntity<ResponseSPDto> retrieveServiceProvider(@PathVariable("id") String id) throws Exception {
+        ResponseSPDto sProviderDto = sProviderService.getServiceProvider(id);
         return ResponseEntity.ok(sProviderDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseSProviderDto>> retrieveAllServiceProviders() {
-        List<ResponseSProviderDto> sProviderDtos = sProviderService.getAllServiceProviders();
+    public ResponseEntity<List<ResponseSPDto>> retrieveAllServiceProviders() {
+        List<ResponseSPDto> sProviderDtos = sProviderService.getAllServiceProviders();
         return ResponseEntity.ok(sProviderDtos);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseSProviderDto> updateServiceProvider(
-            @RequestBody RequestSProviderDto updateRequestDto,
+    public ResponseEntity<ResponseSPDto> updateServiceProvider(
+            @RequestBody RequestSPDto updateRequestDto,
             @PathVariable("id") String id
     ) throws Exception {
-        ResponseSProviderDto sProviderDto = sProviderService.updateServiceProvider(updateRequestDto, id);
+        ResponseSPDto sProviderDto = sProviderService.updateServiceProvider(updateRequestDto, id);
         return ResponseEntity.ok(sProviderDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseSProviderDto> deleteServiceProvider(@PathVariable("id") String id) {
-        ResponseSProviderDto sProviderDto = sProviderService.deleteServiceProvider(id);
+    public ResponseEntity<ResponseSPDto> deleteServiceProvider(@PathVariable("id") String id) {
+        ResponseSPDto sProviderDto = sProviderService.deleteServiceProvider(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(sProviderDto);

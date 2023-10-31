@@ -1,7 +1,7 @@
 package com.example.servicemanagement.services;
 
-import com.example.servicemanagement.dtos.RequestSProviderDto;
-import com.example.servicemanagement.dtos.ResponseSProviderDto;
+import com.example.servicemanagement.dtos.RequestSPDto;
+import com.example.servicemanagement.dtos.ResponseSPDto;
 import com.example.servicemanagement.models.ServiceProvider;
 import com.example.servicemanagement.repositories.SProviderRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class SProviderService {
         this.sProviderRepository = sProviderRepository;
     }
 
-    public ResponseSProviderDto createServiceProvider(RequestSProviderDto requestDto) {
+    public ResponseSPDto createServiceProvider(RequestSPDto requestDto) {
         // todo: if the SP is already present
 
         ServiceProvider serviceProvider = new ServiceProvider();
@@ -27,24 +27,24 @@ public class SProviderService {
         serviceProvider.setCategory(requestDto.getCategory());
 
         ServiceProvider savedSavedProvider = sProviderRepository.save(serviceProvider);
-        return ResponseSProviderDto.from(savedSavedProvider);
+        return ResponseSPDto.from(savedSavedProvider);
     }
 
-    public ResponseSProviderDto getServiceProvider(String id) throws Exception {
+    public ResponseSPDto getServiceProvider(String id) throws Exception {
         Optional<ServiceProvider> serviceProvider = sProviderRepository.findById(id);
         if(serviceProvider.isEmpty())
             throw new Exception("Service Provider is not present");
-        return ResponseSProviderDto.from(serviceProvider.get());
+        return ResponseSPDto.from(serviceProvider.get());
     }
 
-    public List<ResponseSProviderDto> getAllServiceProviders() {
+    public List<ResponseSPDto> getAllServiceProviders() {
         List<ServiceProvider> serviceProviders = sProviderRepository.findAll();
         return serviceProviders.stream()
-                .map(ResponseSProviderDto::from)
+                .map(ResponseSPDto::from)
                 .toList();
     }
 
-    public ResponseSProviderDto updateServiceProvider(RequestSProviderDto updateRequestDto, String id) throws Exception {
+    public ResponseSPDto updateServiceProvider(RequestSPDto updateRequestDto, String id) throws Exception {
         Optional<ServiceProvider> optionalServiceProvider = sProviderRepository.findById(id);
         if(optionalServiceProvider.isEmpty())
             throw new Exception("Service Provider is not present");
@@ -56,11 +56,11 @@ public class SProviderService {
         existingServiceProvider.setCategory(updateRequestDto.getCategory());
 
         ServiceProvider updatedServiceProvider = sProviderRepository.save(existingServiceProvider);
-        return ResponseSProviderDto.from(updatedServiceProvider);
+        return ResponseSPDto.from(updatedServiceProvider);
     }
 
-    public ResponseSProviderDto deleteServiceProvider(String id) {
+    public ResponseSPDto deleteServiceProvider(String id) {
         sProviderRepository.deleteById(id);
-        return ResponseSProviderDto.empty();
+        return ResponseSPDto.empty();
     }
 }
