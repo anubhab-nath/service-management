@@ -2,6 +2,7 @@ package com.example.servicemanagement.controllers;
 
 import com.example.servicemanagement.dtos.RequestSPDto;
 import com.example.servicemanagement.dtos.ResponseSPDto;
+import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.services.SProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class SPController {
     @PostMapping
     public ResponseEntity<ResponseSPDto> addServiceProvider(
             @RequestBody RequestSPDto createRequestDto
-    ) {
+    ) throws Exception {
         ResponseSPDto sProviderDto = sProviderService.createServiceProvider(createRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -59,7 +60,7 @@ public class SPController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseSPDto> deleteServiceProvider(@PathVariable("id") String id) {
+    public ResponseEntity<ResponseSPDto> deleteServiceProvider(@PathVariable("id") String id) throws NotFoundException {
         ResponseSPDto sProviderDto = sProviderService.deleteServiceProvider(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
