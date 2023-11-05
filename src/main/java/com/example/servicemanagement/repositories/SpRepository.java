@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SProviderRepository extends MongoRepository<ServiceProvider, String> {
+public interface SpRepository extends MongoRepository<ServiceProvider, String> {
     Optional<ServiceProvider> findByName(String name);
 }

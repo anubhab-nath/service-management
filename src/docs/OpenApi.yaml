@@ -9,25 +9,29 @@ paths:
   /service-provider:
     post:
       tags:
-        - sp-controller
+        - service provider
+      summary: Add a new Service Provider
+      description: Add a new Service Provider to provide review for/against
       operationId: addServiceProvider
       requestBody:
+        description: Create a new Service Provider
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestSProviderDto'
+              $ref: '#/components/schemas/RequestSpDto'
         required: true
       responses:
-        201:
-          description: CREATED
+        '201':
+          description: Service Provider successfully created
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSProviderDto'
+                $ref: '#/components/schemas/ResponseSpDto'
+
   /service-provider/{id}:
     get:
       tags:
-        - sp-controller
+        - service provider
       operationId: retrieveServiceProvider
       parameters:
         - name: id
@@ -41,16 +45,22 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ResponseSProviderDto'
+                $ref: '#/components/schemas/ResponseSpDto'
     put:
       tags:
-        - sp-controller
+        - service provider
       operationId: updateServiceProvider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestSProviderDto'
+              $ref: '#/components/schemas/RequestSpDto'
         required: true
       responses:
         200:
@@ -58,10 +68,10 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ResponseSProviderDto'
+                $ref: '#/components/schemas/ResponseSpDto'
     delete:
       tags:
-        - sp-controller
+        - service provider
       operationId: deleteServiceProvider
       parameters:
         - name: id
@@ -75,10 +85,10 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ResponseSProviderDto'
+                $ref: '#/components/schemas/ResponseSpDto'
 components:
   schemas:
-    RequestSProviderDto:
+    RequestSpDto:
       type: object
       properties:
         name:
@@ -89,12 +99,11 @@ components:
           type: string
         category:
           type: string
-    ResponseSProviderDto:
+    ResponseSpDto:
       type: object
       properties:
         spId:
-          type: integer
-          format: int64
+          type: string
         name:
           type: string
         address:
