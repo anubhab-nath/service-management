@@ -25,7 +25,7 @@ public class ResponseSpDto {
                 .name(savedSavedProvider.getName())
                 .address(savedSavedProvider.getAddress())
                 .phoneNo(savedSavedProvider.getPhoneNo())
-                .category(savedSavedProvider.getCategory())
+                .category(savedSavedProvider.getCategory().toString())
                 .build();
     }
 }

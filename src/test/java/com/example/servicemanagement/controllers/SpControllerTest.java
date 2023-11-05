@@ -30,7 +30,7 @@ public class SpControllerTest {
     private SpService spService;
 
     private ServiceProvider serviceProvider;
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void addServiceProvider_test() throws Exception {
@@ -47,6 +47,7 @@ public class SpControllerTest {
                 .address("address")
                 .category("category")
                 .build();
+
         Mockito.doReturn(responseSpDto).when(spService).createServiceProvider(Mockito.any());
         mockMvc = MockMvcBuilders.standaloneSetup(spController).build();
         mockMvc.perform(

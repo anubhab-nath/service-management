@@ -1,6 +1,6 @@
 package com.example.servicemanagement.models;
 
-public class Category {
-    private Long id;
-    private String name;
+public enum Category {
+    IN_STORE_SHOPPING,
+    DINE_IN
 }

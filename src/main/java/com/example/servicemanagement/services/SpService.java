@@ -19,18 +19,13 @@ public class SpService {
         this.spRepository = spRepository;
     }
 
-    public ResponseSpDto createServiceProvider(RequestSpDto requestDto) throws Exception {
-        Optional<ServiceProvider> existingServiceProvider = spRepository.findByName(requestDto.getName());
+    public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws Exception {
+        Optional<ServiceProvider> existingServiceProvider = spRepository.findByName(createRequestDto.getName());
         if(existingServiceProvider.isPresent())
             throw new ValueNotAllowedException("VNA_001", "Service Provider with provided name is already present");
 
-        ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.setName(requestDto.getName());
-        serviceProvider.setAddress(requestDto.getAddress());
-        serviceProvider.setPhoneNo(requestDto.getPhoneNo());
-        serviceProvider.setCategory(requestDto.getCategory());
-
-        ServiceProvider savedSavedProvider = spRepository.save(serviceProvider);
+        ServiceProvider newServiceProvider = ServiceProvider.from(createRequestDto);
+        ServiceProvider savedSavedProvider = spRepository.save(newServiceProvider);
         return ResponseSpDto.from(savedSavedProvider);
     }
 
@@ -53,11 +48,8 @@ public class SpService {
         if(optionalServiceProvider.isEmpty())
             throw new NotFoundException("NF_002", "Service Provider");
 
-        ServiceProvider existingServiceProvider = optionalServiceProvider.get();
-        existingServiceProvider.setName(updateRequestDto.getName());
-        existingServiceProvider.setAddress(updateRequestDto.getAddress());
-        existingServiceProvider.setPhoneNo(updateRequestDto.getPhoneNo());
-        existingServiceProvider.setCategory(updateRequestDto.getCategory());
+
+        ServiceProvider existingServiceProvider = optionalServiceProvider.get().updateFrom(updateRequestDto);
 
         ServiceProvider updatedServiceProvider = spRepository.save(existingServiceProvider);
         return ResponseSpDto.from(updatedServiceProvider);
