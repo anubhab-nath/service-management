@@ -3,13 +3,12 @@ package com.example.servicemanagement.dtos;
 import com.example.servicemanagement.models.ServiceProvider;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class ResponseSpDto {
     private String spId;
+    private String email;
     private String name;
     private String address;
     private String phoneNo;
@@ -22,6 +21,7 @@ public class ResponseSpDto {
     public static ResponseSpDto from(ServiceProvider savedSavedProvider) {
         return ResponseSpDto.builder()
                 .spId(savedSavedProvider.getId())
+                .email(savedSavedProvider.getEmail())
                 .name(savedSavedProvider.getName())
                 .address(savedSavedProvider.getAddress())
                 .phoneNo(savedSavedProvider.getPhoneNo())

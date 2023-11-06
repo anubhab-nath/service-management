@@ -3,11 +3,12 @@ package com.example.servicemanagement.models;
 import com.example.servicemanagement.dtos.RequestSpDto;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -19,6 +20,9 @@ public class ServiceProvider {
     @Id
     private String id;
 
+    @Indexed(unique = true)
+    private String email;
+
     private String name;
     private String address;
     private String phoneNo;
@@ -28,6 +32,7 @@ public class ServiceProvider {
 
     public static ServiceProvider from(RequestSpDto requestSpDto) {
         ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setEmail(requestSpDto.getEmail());
         serviceProvider.setName(requestSpDto.getName());
         serviceProvider.setAddress(requestSpDto.getAddress());
         serviceProvider.setPhoneNo(requestSpDto.getPhoneNo());
@@ -36,6 +41,7 @@ public class ServiceProvider {
     }
 
     public ServiceProvider updateFrom(RequestSpDto requestSpDto) {
+        this.setEmail(requestSpDto.getEmail());
         this.setName(requestSpDto.getName());
         this.setAddress(requestSpDto.getAddress());
         this.setPhoneNo(requestSpDto.getPhoneNo());

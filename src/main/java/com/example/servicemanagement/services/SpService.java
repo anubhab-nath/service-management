@@ -19,18 +19,18 @@ public class SpService {
         this.spRepository = spRepository;
     }
 
-    public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws Exception {
-        Optional<ServiceProvider> existingServiceProvider = spRepository.findByName(createRequestDto.getName());
+    public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws ValueNotAllowedException {
+        Optional<ServiceProvider> existingServiceProvider = spRepository.findByEmail(createRequestDto.getEmail());
         if(existingServiceProvider.isPresent())
-            throw new ValueNotAllowedException("VNA_001", "Service Provider with provided name is already present");
+            throw new ValueNotAllowedException("VNA_001", "Email is already used by another Service Provider");
 
         ServiceProvider newServiceProvider = ServiceProvider.from(createRequestDto);
         ServiceProvider savedSavedProvider = spRepository.save(newServiceProvider);
         return ResponseSpDto.from(savedSavedProvider);
     }
 
-    public ResponseSpDto getServiceProvider(String id) throws Exception {
-        Optional<ServiceProvider> serviceProvider = spRepository.findById(id);
+    public ResponseSpDto getServiceProviderById(String spId) throws NotFoundException {
+        Optional<ServiceProvider> serviceProvider = spRepository.findById(spId);
         if(serviceProvider.isEmpty())
             throw new NotFoundException("NF_001", "Service Provider");
         return ResponseSpDto.from(serviceProvider.get());
@@ -43,24 +43,22 @@ public class SpService {
                 .toList();
     }
 
-    public ResponseSpDto updateServiceProvider(RequestSpDto updateRequestDto, String id) throws Exception {
-        Optional<ServiceProvider> optionalServiceProvider = spRepository.findById(id);
+    public ResponseSpDto updateServiceProviderById(RequestSpDto updateRequestDto, String spId) throws NotFoundException {
+        Optional<ServiceProvider> optionalServiceProvider = spRepository.findById(spId);
         if(optionalServiceProvider.isEmpty())
             throw new NotFoundException("NF_002", "Service Provider");
 
-
-        ServiceProvider existingServiceProvider = optionalServiceProvider.get().updateFrom(updateRequestDto);
-
-        ServiceProvider updatedServiceProvider = spRepository.save(existingServiceProvider);
-        return ResponseSpDto.from(updatedServiceProvider);
+        ServiceProvider updatedServiceProvider = optionalServiceProvider.get().updateFrom(updateRequestDto);
+        ServiceProvider savedServiceProvider = spRepository.save(updatedServiceProvider);
+        return ResponseSpDto.from(savedServiceProvider);
     }
 
-    public ResponseSpDto deleteServiceProvider(String id) throws NotFoundException {
-        Optional<ServiceProvider> optionalServiceProvider = spRepository.findById(id);
+    public ResponseSpDto deleteServiceProviderById(String spId) throws NotFoundException {
+        Optional<ServiceProvider> optionalServiceProvider = spRepository.findById(spId);
         if(optionalServiceProvider.isEmpty())
             throw new NotFoundException("NF_003", "Service Provider");
 
-        spRepository.deleteById(id);
+        spRepository.delete(optionalServiceProvider.get());
         return ResponseSpDto.empty();
     }
 }

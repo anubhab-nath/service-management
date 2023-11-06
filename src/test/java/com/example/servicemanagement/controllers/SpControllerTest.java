@@ -35,6 +35,7 @@ public class SpControllerTest {
     @Test
     public void addServiceProvider_test() throws Exception {
         RequestSpDto requestSpDto = RequestSpDto.builder()
+                .email("email")
                 .name("name")
                 .phoneNo("phoneNo")
                 .address("address")
@@ -42,6 +43,7 @@ public class SpControllerTest {
                 .build();
         ResponseSpDto responseSpDto = ResponseSpDto.builder()
                 .spId("spId")
+                .email("emailId")
                 .name("name")
                 .phoneNo("phoneNo")
                 .address("address")
