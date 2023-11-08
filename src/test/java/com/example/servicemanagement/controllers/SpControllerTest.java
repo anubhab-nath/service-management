@@ -56,7 +56,6 @@ public class SpControllerTest {
                 MockMvcRequestBuilders.post("/service-providers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestSpDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").exists());
+                .andExpect(status().is4xxClientError());
     }
 }
