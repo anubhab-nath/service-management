@@ -32,6 +32,9 @@ public class SpControllerTest {
     private ServiceProvider serviceProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @BeforeEach
+    void setUp() {}
+
     @Test
     public void addServiceProvider_test() throws Exception {
         RequestSpDto requestSpDto = RequestSpDto.builder()
@@ -52,8 +55,7 @@ public class SpControllerTest {
 
         Mockito.doReturn(responseSpDto).when(spService).createServiceProvider(Mockito.any());
         mockMvc = MockMvcBuilders.standaloneSetup(spController).build();
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/service-providers")
+        mockMvc.perform(MockMvcRequestBuilders.post("/service-providers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestSpDto)))
                 .andExpect(status().is4xxClientError());
