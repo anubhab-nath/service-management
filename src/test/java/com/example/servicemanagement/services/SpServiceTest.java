@@ -3,6 +3,7 @@ package com.example.servicemanagement.services;
 import com.example.servicemanagement.dtos.RequestSpDto;
 import com.example.servicemanagement.dtos.ResponseSpDto;
 import com.example.servicemanagement.exceptions.MissingRequestBodyException;
+import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.models.Category;
 import com.example.servicemanagement.models.ServiceProvider;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,12 +37,10 @@ public class SpServiceTest {
 
     @InjectMocks
     private SpService spService;
-
     @Mock
     private SpRepository spRepository;
 
     private AutoCloseable autoCloseable;
-
     private RequestSpDto requestSpDto;
     private ServiceProvider serviceProvider;
 
@@ -74,7 +75,7 @@ public class SpServiceTest {
     @ParameterizedTest
     @NullSource
     void createServiceProvider_WhenRequestDtoIsNull(RequestSpDto requestSpDto) {
-        assertThrows(IllegalArgumentException.class, () -> spService.createServiceProvider(requestSpDto));
+        assertThrows(MissingRequestBodyException.class, () -> spService.createServiceProvider(requestSpDto));
     }
 
     @Test
@@ -89,8 +90,29 @@ public class SpServiceTest {
         ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
         when(spRepository.save(any(ServiceProvider.class)))
                 .thenReturn(serviceProvider);
-
         assertEquals(responseSpDto, spService.createServiceProvider(requestSpDto));
+    }
+
+    @Test
+    void getServiceProviderById_WhenIdIsNull() {
+        assertThrows(NotFoundException.class, () -> spService.getServiceProviderById(null), "spId cannot be null");
+    }
+
+
+    @Test
+    void getServiceProviderById_WhenIdDoNotExist() {
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> spService.getServiceProviderById(anyString()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"spid"})
+    void getServiceProviderById_WhenSPExists(String spId) throws NotFoundException {
+        ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.of(serviceProvider));
+        assertEquals(responseSpDto, spService.getServiceProviderById(spId));
     }
 
     @Test
