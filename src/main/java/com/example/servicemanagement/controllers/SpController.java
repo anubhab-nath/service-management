@@ -2,6 +2,7 @@ package com.example.servicemanagement.controllers;
 
 import com.example.servicemanagement.dtos.RequestSpDto;
 import com.example.servicemanagement.dtos.ResponseSpDto;
+import com.example.servicemanagement.exceptions.MissingRequestBodyException;
 import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.services.SpService;
@@ -32,7 +33,7 @@ public class SpController {
     @PostMapping
     public ResponseEntity<ResponseSpDto> addServiceProvider(
             @RequestBody RequestSpDto createRequestDto
-    ) throws ValueNotAllowedException {
+    ) throws ValueNotAllowedException, MissingRequestBodyException {
         ResponseSpDto responseSpDto = spService.createServiceProvider(createRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

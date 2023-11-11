@@ -2,6 +2,7 @@ package com.example.servicemanagement.services;
 
 import com.example.servicemanagement.dtos.RequestSpDto;
 import com.example.servicemanagement.dtos.ResponseSpDto;
+import com.example.servicemanagement.exceptions.MissingRequestBodyException;
 import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.models.ServiceProvider;
@@ -19,14 +20,17 @@ public class SpService {
         this.spRepository = spRepository;
     }
 
-    public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws ValueNotAllowedException {
+    public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws ValueNotAllowedException, MissingRequestBodyException {
+        if(createRequestDto == null)
+            throw new MissingRequestBodyException("RequestDto is null");
+
         Optional<ServiceProvider> existingServiceProvider = spRepository.findByEmail(createRequestDto.getEmail());
         if(existingServiceProvider.isPresent())
             throw new ValueNotAllowedException("VNA_001", "Email is already used by another Service Provider");
 
         ServiceProvider newServiceProvider = ServiceProvider.from(createRequestDto);
-        ServiceProvider savedSavedProvider = spRepository.save(newServiceProvider);
-        return ResponseSpDto.from(savedSavedProvider);
+        ServiceProvider savedServiceProvider = spRepository.save(newServiceProvider);
+        return ResponseSpDto.from(savedServiceProvider);
     }
 
     public ResponseSpDto getServiceProviderById(String spId) throws NotFoundException {
