@@ -2,6 +2,8 @@ package com.example.servicemanagement.controllers;
 
 import com.example.servicemanagement.dtos.RequestSpDto;
 import com.example.servicemanagement.dtos.ResponseSpDto;
+import com.example.servicemanagement.exceptions.MissingRequestBodyException;
+import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.models.Category;
 import com.example.servicemanagement.models.ServiceProvider;
@@ -39,8 +41,8 @@ public class SpControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static ServiceProvider serviceProvider;
     private static RequestSpDto requestSpDto;
+    private static ResponseSpDto responseSpDto;
 
     @BeforeAll
     static void init() {
@@ -53,13 +55,15 @@ public class SpControllerTest {
                 .category(category)
                 .build();
 
-        serviceProvider = new ServiceProvider();
+        ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setId("spid");
         serviceProvider.setName("name");
         serviceProvider.setEmail("email");
         serviceProvider.setAddress("address");
         serviceProvider.setPhoneNo("phoneNo");
         serviceProvider.setCategory(Category.valueOf(category));
+
+        responseSpDto = ResponseSpDto.from(serviceProvider);
     }
 
     @BeforeEach
@@ -80,7 +84,6 @@ public class SpControllerTest {
 
     @Test
     void addServiceProvider_ReturnsNewServiceProvider() throws Exception {
-        ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
         when(spService.createServiceProvider(any(RequestSpDto.class)))
                 .thenReturn(responseSpDto);
 
@@ -92,8 +95,7 @@ public class SpControllerTest {
     }
 
     @Test
-    void retrieveServiceProviderById_ReturnsSpOfGivenSpId() throws Exception {
-        ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
+    void retrieveServiceProvider_ReturnsSpOfGivenSpId() throws Exception {
         when(spService.getServiceProviderById(anyString()))
                 .thenReturn(responseSpDto);
 
@@ -102,7 +104,7 @@ public class SpControllerTest {
     }
 
     @Test
-    void getAllServiceProviders_WhenNoSP() throws Exception {
+    void retrieveAllServiceProviders_WhenNoSP() throws Exception {
         when(spService.getAllServiceProviders())
                 .thenReturn(new ArrayList<>());
 
@@ -115,7 +117,7 @@ public class SpControllerTest {
     @Test
     void getAllServiceProviders_WhenSpExists() throws Exception {
         List<ResponseSpDto> responseSpDtoList = new ArrayList<>();
-        responseSpDtoList.add(ResponseSpDto.from(serviceProvider));
+        responseSpDtoList.add(responseSpDto);
 
         when(spService.getAllServiceProviders())
                 .thenReturn(responseSpDtoList);
@@ -123,5 +125,24 @@ public class SpControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/service-provider"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(responseSpDtoList)));
+    }
+
+    @Test
+    void updateServiceProvider_WhenGivenSpidExists() throws Exception {
+        when(spService.updateServiceProviderById(any(RequestSpDto.class), anyString()))
+                .thenReturn(responseSpDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/service-provider/12")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestSpDto)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteServiceProvider_WhenGivenSpidExists() throws Exception {
+        when(spService.deleteServiceProviderById(anyString()))
+                .thenReturn(ResponseSpDto.empty());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/service-provider/12"))
+                .andExpect(status().isNoContent());
     }
 }
