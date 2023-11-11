@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -94,8 +92,8 @@ public class SpServiceTest {
     }
 
     @Test
-    void getServiceProviderById_WhenIdIsNull() {
-        assertThrows(NotFoundException.class, () -> spService.getServiceProviderById(null), "spId cannot be null");
+    void getServiceProviderById_WhenIdIsEmpty() {
+        assertThrows(NotFoundException.class, () -> spService.getServiceProviderById(""), "spId cannot be null");
     }
 
 
@@ -106,9 +104,9 @@ public class SpServiceTest {
         assertThrows(NotFoundException.class, () -> spService.getServiceProviderById(anyString()));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"spid"})
-    void getServiceProviderById_WhenSPExists(String spId) throws NotFoundException {
+    @Test
+    void getServiceProviderById_WhenSPExists() throws NotFoundException {
+        String spId = "spid";
         ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
         when(spRepository.findById(anyString()))
                 .thenReturn(Optional.of(serviceProvider));
@@ -138,5 +136,29 @@ public class SpServiceTest {
         List<ResponseSpDto> actualResult = spService.getAllServiceProviders();
         List<ResponseSpDto> expectedResult = spList.stream().map(ResponseSpDto::from).toList();
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void updateServiceProviderById_WhenSPDoesNotExist() {
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> spService.updateServiceProviderById(requestSpDto, anyString()));
+    }
+
+    @Test
+    void updateServiceProviderById_WhenRequestDtoIsNull() {
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.of(serviceProvider));
+        assertThrows(MissingRequestBodyException.class, () -> spService.updateServiceProviderById(null, ""));
+    }
+
+    @Test
+    void updateServiceProviderById_WhenSPExists() throws MissingRequestBodyException, NotFoundException {
+        ResponseSpDto responseSpDto = ResponseSpDto.from(serviceProvider);
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.of(serviceProvider));
+        when(spRepository.save(any(ServiceProvider.class)))
+                .thenReturn(serviceProvider);
+        assertEquals(responseSpDto, spService.updateServiceProviderById(requestSpDto, anyString()));
     }
 }

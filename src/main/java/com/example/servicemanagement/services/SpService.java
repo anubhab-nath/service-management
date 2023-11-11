@@ -7,6 +7,7 @@ import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.models.ServiceProvider;
 import com.example.servicemanagement.repositories.SpRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +17,14 @@ import java.util.Optional;
 public class SpService {
     private final SpRepository spRepository;
 
+    @Autowired
     public SpService(SpRepository spRepository) {
         this.spRepository = spRepository;
     }
 
     public ResponseSpDto createServiceProvider(RequestSpDto createRequestDto) throws ValueNotAllowedException, MissingRequestBodyException {
         if(createRequestDto == null)
-            throw new MissingRequestBodyException("RequestDto is null");
+            throw new MissingRequestBodyException("CreateRequestDto is null");
 
         Optional<ServiceProvider> existingServiceProvider = spRepository.findByEmail(createRequestDto.getEmail());
         if(existingServiceProvider.isPresent())
@@ -47,10 +49,12 @@ public class SpService {
                 .toList();
     }
 
-    public ResponseSpDto updateServiceProviderById(RequestSpDto updateRequestDto, String spId) throws NotFoundException {
+    public ResponseSpDto updateServiceProviderById(RequestSpDto updateRequestDto, String spId) throws NotFoundException, MissingRequestBodyException {
         Optional<ServiceProvider> optionalServiceProvider = spRepository.findById(spId);
         if(optionalServiceProvider.isEmpty())
             throw new NotFoundException("NF_002", "Service Provider");
+        if(updateRequestDto == null)
+            throw new MissingRequestBodyException("UpdateRequestDto is null");
 
         ServiceProvider updatedServiceProvider = optionalServiceProvider.get().updateFrom(updateRequestDto);
         ServiceProvider savedServiceProvider = spRepository.save(updatedServiceProvider);

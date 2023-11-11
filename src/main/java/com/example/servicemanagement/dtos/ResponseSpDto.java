@@ -21,14 +21,14 @@ public class ResponseSpDto {
         return ResponseSpDto.builder().build();
     }
 
-    public static ResponseSpDto from(ServiceProvider savedSavedProvider) {
-        Category category = savedSavedProvider.getCategory();
+    public static ResponseSpDto from(ServiceProvider serviceProvider) {
+        Category category = serviceProvider.getCategory();
         return ResponseSpDto.builder()
-                .spId(savedSavedProvider.getId())
-                .email(savedSavedProvider.getEmail())
-                .name(savedSavedProvider.getName())
-                .address(savedSavedProvider.getAddress())
-                .phoneNo(savedSavedProvider.getPhoneNo())
+                .spId(serviceProvider.getId())
+                .email(serviceProvider.getEmail())
+                .name(serviceProvider.getName())
+                .address(serviceProvider.getAddress())
+                .phoneNo(serviceProvider.getPhoneNo())
                 .category(Objects.isNull(category) ? null : category.toString())
                 .build();
     }

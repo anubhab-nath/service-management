@@ -56,7 +56,7 @@ public class SpController {
     public ResponseEntity<ResponseSpDto> updateServiceProvider(
             @RequestBody RequestSpDto updateRequestDto,
             @PathVariable("id") String id
-    ) throws NotFoundException {
+    ) throws NotFoundException, MissingRequestBodyException {
         ResponseSpDto responseSpDto = spService.updateServiceProviderById(updateRequestDto, id);
         return ResponseEntity.ok(responseSpDto);
     }
