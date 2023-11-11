@@ -44,11 +44,13 @@ public class SpServiceTest {
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
 
+        String email = "email@domain.com";
+        String phoneNum = "7899447701";
         String category = "DINE_IN";
         requestSpDto = RequestSpDto.builder()
-                .email("email")
+                .email(email)
                 .name("name")
-                .phoneNo("phoneNo")
+                .phoneNo(phoneNum)
                 .address("address")
                 .category("DINE_IN")
                 .build();
@@ -56,9 +58,9 @@ public class SpServiceTest {
         serviceProvider = new ServiceProvider();
         serviceProvider.setId("spid");
         serviceProvider.setName("name");
-        serviceProvider.setEmail("email");
+        serviceProvider.setEmail(email);
         serviceProvider.setAddress("address");
-        serviceProvider.setPhoneNo("phoneNo");
+        serviceProvider.setPhoneNo(phoneNum);
         serviceProvider.setCategory(Category.valueOf(category));
     }
 

@@ -2,8 +2,6 @@ package com.example.servicemanagement.controllers;
 
 import com.example.servicemanagement.dtos.RequestSpDto;
 import com.example.servicemanagement.dtos.ResponseSpDto;
-import com.example.servicemanagement.exceptions.MissingRequestBodyException;
-import com.example.servicemanagement.exceptions.NotFoundException;
 import com.example.servicemanagement.exceptions.ValueNotAllowedException;
 import com.example.servicemanagement.models.Category;
 import com.example.servicemanagement.models.ServiceProvider;

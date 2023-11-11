@@ -1,6 +1,7 @@
 package com.example.servicemanagement.models;
 
 import com.example.servicemanagement.dtos.RequestSpDto;
+import com.example.servicemanagement.validations.SpValidator;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class ServiceProvider {
     private Category category;
 
     public static ServiceProvider from(RequestSpDto requestSpDto) {
+        SpValidator.validateEmail(requestSpDto.getEmail());
+        SpValidator.validatePhoneNo(requestSpDto.getPhoneNo());
+        SpValidator.validateCategory(requestSpDto.getCategory());
+
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setEmail(requestSpDto.getEmail());
         serviceProvider.setName(requestSpDto.getName());
