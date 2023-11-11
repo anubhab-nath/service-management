@@ -11,8 +11,6 @@ import com.example.servicemanagement.repositories.SpRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -70,10 +68,9 @@ public class SpServiceTest {
         autoCloseable.close();
     }
 
-    @ParameterizedTest
-    @NullSource
-    void createServiceProvider_WhenRequestDtoIsNull(RequestSpDto requestSpDto) {
-        assertThrows(MissingRequestBodyException.class, () -> spService.createServiceProvider(requestSpDto));
+    @Test
+    void createServiceProvider_WhenRequestDtoIsNull() {
+        assertThrows(MissingRequestBodyException.class, () -> spService.createServiceProvider(null));
     }
 
     @Test
@@ -160,5 +157,19 @@ public class SpServiceTest {
         when(spRepository.save(any(ServiceProvider.class)))
                 .thenReturn(serviceProvider);
         assertEquals(responseSpDto, spService.updateServiceProviderById(requestSpDto, anyString()));
+    }
+
+    @Test
+    void deleteServiceProviderById_WhenSpDoesNotExist() {
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> spService.deleteServiceProviderById(anyString()));
+    }
+
+    @Test
+    void deleteServiceProviderById_WhenSpExists() throws NotFoundException {
+        when(spRepository.findById(anyString()))
+                .thenReturn(Optional.of(serviceProvider));
+        assertEquals(ResponseSpDto.empty(), spService.deleteServiceProviderById(anyString()));
     }
 }
