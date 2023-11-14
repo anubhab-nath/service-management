@@ -27,11 +27,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSpDto'
-
+    get:
+      tags:
+        - service provider
+      summary: Retrieve all Service Providers
+      description: Retrieve all the Service Providers present in database
+      operationId: retrieveAllServiceProviders
+      responses:
+        200:
+          description: All Service Providers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseSpDto'
   /service-provider/{id}:
     get:
       tags:
         - service provider
+      summary: Retrieve Service Provider by Id
+      description: Retrieves Service Provider based on the spId provided
       operationId: retrieveServiceProvider
       parameters:
         - name: id
@@ -41,14 +57,18 @@ paths:
             type: string
       responses:
         200:
-          description: OK
+          description: Successful Operation
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSpDto'
+        404:
+          description: Service Provider not found
     put:
       tags:
         - service provider
+      summary: Updates Service Provider by Id
+      description: Updates Service Provider based on the spId provided
       operationId: updateServiceProvider
       parameters:
         - name: id
@@ -64,14 +84,18 @@ paths:
         required: true
       responses:
         200:
-          description: OK
+          description: Successful Operation
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSpDto'
+        404:
+          description: Service Provider not found
     delete:
       tags:
         - service provider
+      summary: Delete Service Provider by Id
+      description: Deletes Service Provider based on the spId provided
       operationId: deleteServiceProvider
       parameters:
         - name: id
@@ -81,11 +105,13 @@ paths:
             type: string
       responses:
         204:
-          description: NO-CONTENT
+          description: Successful Operation, with No Content returned
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSpDto'
+        404:
+          description: Service Provider not found
 components:
   schemas:
     RequestSpDto:
